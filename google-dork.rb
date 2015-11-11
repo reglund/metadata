@@ -14,6 +14,7 @@ end
 url  = ARGV[0]
 dork = ARGV[1]
 download = ARGV[2]
+html_file = File.open("/tmp/metadata.html", "w")
 
 if download == "1"
   p "Ok, we'll download the files too"
@@ -30,29 +31,19 @@ else
   p "Not going to download the files, only run exiftool on existing #{dork} files"
 end
 
+html_file.write("<html><title>Metadata</title><body>")
 
-Dir.glob("/tmp/*.#{dork}") do |file|  
+Dir.glob("/tmp/*.#{dork}") do |file|
+  html_file.write("<table border=\"solid\"><th>Filename: <a href=\"#{file}\">#{file}:</a></th><th>Data</th>")
   e = Exiftool.new(file)
   data = e.to_hash
   
   for key in data.keys()
-    print key, " : (", data[key], ")\n"
+    html_file.write("<tr><td>#{key}</td><td>#{data[key]}</td></tr>")
   end
-
-  # p "=================================================="
-  # p "Organization (#{e[:organization]})"
-  # p "Mail address (#{e[:mail_address]})"
-  # p "Created date (#{e[:create_date]})"
-  # p "Author (#{e[:author]})"
-  # p "Creator (#{e[:creator]})"
-  # p "Gpslatitude (#{e[:gps_latitude]})"
-  # p "Gpslongitude (#{e[:gps_longitude]})"
-  # p "Directory (#{e[:directory]})"
-  # p "Last modified by (#{e[:last_modified_by]})"
-  # p "GPS Latitude Ref (#{e[:gps_latitude_ref]})"
-  # p "GPS Longitude Ref (#{e[:gps_longitude_ref]})"
-  # p "GPS Time Stamp (#{e[:gps_time_stamp]})"
-  # p "GPS (#{e[:gps_latitude_ref]})"
-  # p "GPS Latitude ref (#{e[:gps_latitude_ref]})"
   
+  html_file.write("</table>")  
 end
+
+html_file.write("</body></html>")
+html_file.close unless html_file.nil?
