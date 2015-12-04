@@ -26,7 +26,7 @@ def extract_data
   puts "Extracting metadata"
   path = "/tmp/unpack/word/media/"
   $html_file.write("<html><meta charset=\"UTF-8\"><title>Metadata in embedded pictures</title><body>")
-
+  
   Dir.glob("#{path}/*.jpg") do |file|
     puts "Running exiftool on #{file}"
     $html_file.write("<br/><br/>")
@@ -40,7 +40,6 @@ def extract_data
   end
 end
 
-
 def clean_up(dir)
   puts "Cleaning up"
   FileUtils.remove_dir(dir)
@@ -49,11 +48,8 @@ def clean_up(dir)
   end
 end
 
-def init
-
-end
-
 $html_file = File.open("/tmp/metadata_embedded_pic.html", "a")
 
 loop_over_files()
-#unless File.basename(file) =~ /jpg|png|gif|modernizr|fancybox|jquery/
+$html_file.close
+
